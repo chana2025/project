@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { TextField, Button, Typography, Container, Box } from '@mui/material';
-
+import React from "react";
 export const SignUpPage = () => {
     const onSubmit = (event: FormEvent) => {
         event.preventDefault();

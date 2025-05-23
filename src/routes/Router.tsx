@@ -1,15 +1,14 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router"
 import { HomePage } from "../pages/HomePage"
 import { ProductsPage } from "../pages/ProductsPage"
-import { AuthPage } from "../pages/AuthPage"
 import { LoginPage } from "../pages/LoginPage"
 import { SignUpPage } from "../pages/SignUpPage"
 import { Layout } from "../layouts/Layout"
 import { Paths } from "./paths"
 import AuthGuard from "../auth/AuthGuard"
 import GuestGuard from "../auth/guestGuard"
-import { RoleType } from "../types/user.types"
-
+import { eRole } from "../types/customer.types"
+import React from "react"
 const Router = () => {
     const router = createBrowserRouter([
         {
@@ -22,7 +21,7 @@ const Router = () => {
                 },
                 {
                     path: Paths.products,
-                    element: <AuthGuard roles={[RoleType.Admin]} ><ProductsPage  /></AuthGuard>
+                    element: <AuthGuard roles={[eRole.ADMIN]} ><ProductsPage  /></AuthGuard>
                 },
             ]
         },
@@ -32,7 +31,7 @@ const Router = () => {
         },
         {
             path: 'auth',
-            element: <GuestGuard><AuthPage /></GuestGuard>,
+          //  element: <GuestGuard><AuthPage /></GuestGuard>,
             children: [
                 {
                     path: Paths.login,

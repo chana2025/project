@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import { useAppSelector } from "../redux/store"
 import { selectAuth } from "../redux/auth/auth.selector"
 import { RoleType } from "../types/user.types"
+import React from 'react';
 
 type Props = {
     children: ReactNode,

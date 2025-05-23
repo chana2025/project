@@ -2,9 +2,9 @@ import { Outlet, NavLink } from 'react-router'
 import './style.css'
 import { Paths } from '../routes/paths'
 import RoleGuard from '../auth/RoleGuard'
-import { RoleType } from '../types/user.types'
+import { eRole } from '../types/customer.types'
 import { removeSession } from '../auth/auth.utils'
-
+import React from 'react'
 export const Layout = () => {
     return <>
         <header><NavBar /><AcountButton /></header>
@@ -17,7 +17,7 @@ export const Layout = () => {
 export const NavBar = () => {
     return <nav>
         <NavLink to={`/${Paths.home}`} end>Home</NavLink>
-        <RoleGuard roles={[RoleType.Admin]}><NavLink to={Paths.products}>Products</NavLink></RoleGuard>
+        <RoleGuard roles={[eRole.ADMIN]}><NavLink to={Paths.products}>Products</NavLink></RoleGuard>
     </nav>
 }
 

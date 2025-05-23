@@ -1,3 +1,5 @@
+// ניתובים
+
 export const Paths = {
     login: 'login',
     auth: 'auth',

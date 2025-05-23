@@ -3,6 +3,7 @@ import { Navigate } from "react-router"
 import { useAppSelector } from "../redux/store"
 import { selectAuth } from "../redux/auth/auth.selector"
 import { Paths } from "../routes/paths"
+import React from 'react';
 
 type Props = {
     children: ReactNode

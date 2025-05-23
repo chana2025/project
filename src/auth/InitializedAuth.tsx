@@ -16,10 +16,10 @@ const InitializedAuth = () => {
                     setSession(token)
                     const user = {
                         id: 1,
-                        name: 'sara',
+                        name: 'shifra',
                         role: RoleType.Admin,
-                        phone: '05246545614',
-                        email: 'sara@gmail.com',
+                        phone: '0534146743',
+                        email: 's46743m@gmail.com',
                         address: '',
                     }
                     dispatch(setAuth(user))

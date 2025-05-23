@@ -4,8 +4,9 @@ import { login } from "../services/auth.service"
 import { setSession } from "../auth/auth.utils"
 import { useAppDispatch } from "../redux/store"
 import { setAuth } from "../redux/auth/auth.slice"
-import { RoleType } from "../types/user.types"
+import { eRole } from "../types/customer.types"
 import { TextField, Button, Typography, Container, Box } from '@mui/material'
+import React from "react"
 
 export const LoginPage = () => {
     const navigate = useNavigate()
@@ -21,7 +22,7 @@ export const LoginPage = () => {
             const user = {
                 id: 1,
                 name,
-                role: RoleType.Admin,
+                role: eRole.ADMIN,
                 phone: '0527694257',
                 email: 'chani@gmail.com',
                 address: '',
