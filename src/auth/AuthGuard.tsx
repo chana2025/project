@@ -3,11 +3,12 @@ import { Navigate } from "react-router"
 import { useAppSelector } from "../redux/store"
 import { selectAuth } from "../redux/auth/auth.selector"
 import { Paths } from "../routes/paths"
-import { RoleType } from "../types/user.types"
+import { eRole } from "../types/customer.types"
+
 
 type Props = {
     children: ReactNode,
-    roles?: RoleType[]
+    roles?: eRole[]
 }
 
 const AuthGuard = ({ children, roles }: Props) => {
@@ -21,7 +22,7 @@ const AuthGuard = ({ children, roles }: Props) => {
         return <Navigate to={`/${Paths.auth}/${Paths.login}`} />
     }
 
-    if (roles && roles.length && !roles.includes(user!.role)) {
+    if (roles && roles.length && !roles.includes(user!.Role)) {
         return <h1>unauthorized</h1>
     }
 

@@ -1,36 +1,47 @@
-import { FormEvent } from "react"
-import { Link, useNavigate } from "react-router"
+import React, { FormEvent, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { login } from "../services/auth.service"
 import { setSession } from "../auth/auth.utils"
 import { useAppDispatch } from "../redux/store"
 import { setAuth } from "../redux/auth/auth.slice"
-import { eRole } from "../types/customer.types"
-import { TextField, Button, Typography, Container, Box } from '@mui/material'
-import React from "react"
+import { customer, eGender, eRole } from "../types/customer.types"
+import { TextField, Button, Typography, Container, Box, Alert } from '@mui/material'
 
 export const LoginPage = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
+    const [error, setError] = useState<string | null>(null)
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
+        const email = formData.get('email')?.toString() || ''
+        const password = formData.get('password')?.toString() || ''
+
         try {
-            const name: string = formData.get('name')?.toString()!
-            const token = await login(name || '', formData.get('password')?.toString() || '')
+            const token = await login(email, password)
             setSession(token)
-            const user = {
-                id: 1,
-                name,
-                role: eRole.ADMIN,
-                phone: '0527694257',
-                email: 'chani@gmail.com',
-                address: '',
+
+            // 💡 כאן את יכולה להחליף בהמשך בקבלת פרטי משתמש אמיתיים מהשרת
+            const user: customer = {
+                CustomerId: 1,
+                FullName: email,
+                Gender: eGender.FEMAIL,
+                Phone: '0527694257',
+                Email: email,
+                Heigth: 170,
+                Weigth: '60',
+                Password: '',
+                DietId: 0,
+                Role: eRole.ADMIN,
+                ImageUrl: ''
             }
+
             dispatch(setAuth(user))
             navigate('/home')
-        } catch (error) {
-            console.error('Login failed', error); // הוספת ניהול שגיאות
+        } catch (err) {
+            console.error('Login failed', err)
+            setError('כתובת מייל או סיסמה שגויים.')
         }
     }
 
@@ -40,15 +51,22 @@ export const LoginPage = () => {
                 <Typography component="h1" variant="h5">
                     כניסת משתמש
                 </Typography>
+
+                {error && (
+                    <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+                        {error}
+                    </Alert>
+                )}
+
                 <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"
                         required
                         fullWidth
-                        id="name"
-                        label="שם משתמש"
-                        name="name"
-                        autoComplete="name"
+                        id="email"
+                        label="אימייל"
+                        name="email"
+                        autoComplete="email"
                         autoFocus
                     />
                     <TextField
@@ -70,7 +88,7 @@ export const LoginPage = () => {
                         כניסת משתמש
                     </Button>
                     <Typography variant="body2" align="center">
-                        עדיין לא רשום? <Link to='/auth/sign-up'>הרשם</Link>
+                        עדיין לא רשום? <Link to='/auth/sign-up'>הרשמה</Link>
                     </Typography>
                 </Box>
             </Box>

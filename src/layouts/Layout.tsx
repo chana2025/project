@@ -1,34 +1,17 @@
-import { Outlet, NavLink } from 'react-router'
-import './style.css'
-import { Paths } from '../routes/paths'
-import RoleGuard from '../auth/RoleGuard'
-import { eRole } from '../types/customer.types'
-import { removeSession } from '../auth/auth.utils'
-import React from 'react'
+import React from "react";
+import { Outlet, NavLink } from "react-router-dom";
+
 export const Layout = () => {
-    return <>
-        <header><NavBar /><AcountButton /></header>
-        {/* // מחזיר את האלמנט שתואם לתת ניתוב הנוכחי */}
-        <main><Outlet /></main>
-        <footer>React Course</footer>
+  return (
+    <>
+      <nav>
+        <NavLink to="/home">Home</NavLink>
+        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/auth/login">Login</NavLink>
+      </nav>
+      <main>
+        <Outlet />
+      </main>
     </>
-}
-
-export const NavBar = () => {
-    return <nav>
-        <NavLink to={`/${Paths.home}`} end>Home</NavLink>
-        <RoleGuard roles={[eRole.ADMIN]}><NavLink to={Paths.products}>Products</NavLink></RoleGuard>
-    </nav>
-}
-
-
-export const AcountButton = () => {
-
-    const logout = () => {
-        removeSession()
-    }
-
-    return <div>
-        <button onClick={logout}>logout</button>
-    </div>
-}
+  );
+};
