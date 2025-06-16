@@ -1,15 +1,20 @@
-import axios, { AxiosResponse } from "axios"
+import axios, { AxiosResponse, AxiosError } from "axios"
 import { removeSession } from "../auth/auth.utils"
 
 const baseURL = 'https://localhost:7091/api'
 
 const axiosInstance = axios.create({ baseURL })
 
-axiosInstance.interceptors.response.use((response: AxiosResponse) => {
-    if (response.status === 401) {
-        removeSession()
+axiosInstance.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => {
+        if (error.response?.status === 401) {
+            removeSession()
+            // אפשרות: הפנייה אוטומטית לדף כניסה
+            // window.location.href = '/auth/login'
+        }
+        return Promise.reject(error)
     }
-    return response
-})
+)
 
 export default axiosInstance

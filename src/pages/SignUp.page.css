@@ -1,0 +1,69 @@
+/* רקע כללי */
+body {
+  background: linear-gradient(to bottom right, #f0fff4, #ffffff);
+  font-family: 'Heebo', 'Assistant', sans-serif;
+}
+
+/* כרטיס ההרשמה */
+.MuiPaper-root {
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 128, 0, 0.08);
+  border-radius: 18px !important;
+  padding: 32px !important;
+}
+
+/* טופס */
+form {
+  margin-top: 12px;
+}
+
+/* כותרת */
+.MuiTypography-h5 {
+  color: #2f855a;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* שדות טקסט */
+.MuiTextField-root label {
+  right: 0;
+  left: auto;
+  direction: rtl;
+}
+
+.MuiTextField-root input {
+  direction: rtl;
+}
+
+/* כפתור הרשמה */
+button[type="submit"] {
+  background-color: #38a169;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #2f855a;
+  transform: scale(1.02);
+}
+
+/* שגיאה */
+.MuiTypography-root.MuiTypography-body2.MuiTypography-colorError {
+  background-color: #fed7d7;
+  color: #c53030;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* קישור התחברות */
+.MuiTypography-body2 a {
+  color: #2b6cb0;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.MuiTypography-body2 a:hover {
+  text-decoration: underline;
+}

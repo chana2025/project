@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
-
+import './SignUp.page.css';
 import {
   TextField,
   Button,
@@ -20,7 +20,7 @@ export const SignUpPage = () => {
     password: "",
     confirmPassword: "",
   });
-
+//typeלמה אין התאמה ל 
   const [errors, setErrors] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
