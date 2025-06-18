@@ -1,216 +1,671 @@
-/* HomePage1.css */
+/* HomePage1.css - כפתורי חיפוש ואקסל מעוצבים ברמה גבוהה */
 
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap');
+/* ניתן להוסיף כאן Font Awesome אם רוצים אייקונים: @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'); */
 
+/* Reset and Base Styles */
 body {
-  font-family: 'Heebo', sans-serif;
-  direction: rtl;
-  background: #f0f4f8;
-  margin: 0;
-  padding: 0;
-  color: #333;
+    margin: 0;
+    padding: 0;
+    font-family: 'Heebo', sans-serif;
+    direction: rtl; /* Right-to-Left for Hebrew */
+    background: #f8fbfd; /* Light, clean background */
+    color: #333;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 1rem;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
-/* ===== Header ===== */
+/* --- Header & Navigation (Navbar) --- */
 .main-header {
-  position: fixed;
-  top: 0; width: 100%;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  z-index: 1000;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    z-index: 1000;
+    padding: 0.35rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease, height 0.3s ease;
 }
+
+.main-header.scrolled {
+    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+    height: 60px;
+}
+
 .main-header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1.2rem;
 }
+
 .logo {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #388e3c;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #388e3c;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color 0.3s ease, transform 0.2s ease-out;
 }
+
+.logo:hover {
+    color: #2e7d32;
+    transform: scale(1.02);
+}
+
+.header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
 .nav-links {
-  display: flex;
-  gap: 1rem;
-}
-.nav-links a {
-  color: #fff;
-  background-color: #66bb6a;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-.nav-links a:hover {
-  background-color: #388e3c;
-  transform: scale(1.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
 }
 
-/* ===== Search Bar ===== */
+.nav-links a,
+.nav-links button {
+    color: #505050;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.4rem 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    position: relative;
+    white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links button:not(:disabled):hover {
+    color: #2e7d32;
+    background-color: #e6f6e7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2.5px;
+    bottom: -5px;
+    left: 50%;
+    background-color: #388e3c;
+    transition: width 0.35s ease-out, left 0.35s ease-out;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+.nav-links .nav-button {
+    background-color: #66bb6a;
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    font-weight: 600;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+}
+
+.nav-links .nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-25deg);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.nav-links .nav-button:hover::before {
+    left: 100%;
+}
+
+.nav-links .nav-button:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+/* --- Search Bar & Excel Button - ENHANCED STYLES --- */
 .header-search {
-  flex: 1;
-  max-width: 400px;
-  margin: 0 1rem;
-  position: relative;
-}
-.header-search input {
-  width: 100%;
-  padding: .6rem 1rem;
-  border: 1px solid #c5ced4;
-  border-radius: 20px;
-  font-size: .95rem;
-}
-.header-search input:focus {
-  outline: none;
-  border-color: #388e3c;
-  box-shadow: 0 0 5px rgba(56,142,60,0.3);
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    max-width: 450px;
+    justify-content: flex-end;
+    position: relative;
 }
 
-/* ===== Hero – מסך מלא ===== */
+.header-search .product-search-input {
+    flex-grow: 1;
+    padding: 0.5rem 1.4rem;
+    border: 1px solid #c8d3db;
+    border-radius: 28px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.06);
+    padding-left: 3rem; /* מרווח לאייקון החיפוש */
+}
+
+.header-search .product-search-input:focus {
+    border-color: #66bb6a;
+    box-shadow: 0 0 15px rgba(102,187,106,0.35), inset 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* אייקון חיפוש מובנה בתוך שדה החיפוש */
+.header-search::before {
+    /* נניח שאתה משתמש ב-Font Awesome. אם לא, החלף בתמונה/SVG או בטל. */
+    content: '\f002'; /* קוד של אייקון זכוכית מגדלת מ-Font Awesome */
+    font-family: "Font Awesome 5 Free"; /* חובה אם משתמשים ב-Font Awesome */
+    font-weight: 900; /* חובה לאייקונים מסוג Solid */
+    position: absolute;
+    right: 1.2rem; /* מיקום יחסי ל-input */
+    color: #888;
+    font-size: 1rem;
+    pointer-events: none; /* כדי לא לחסום לחיצות על האינפוט */
+    z-index: 2;
+}
+
+.excel-download-button {
+    background: linear-gradient(to right, #4CAF50, #2e7d32);
+    color: white;
+    padding: 0.55rem 1.6rem;
+    border-radius: 28px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    white-space: nowrap;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.excel-download-button:hover:not(:disabled) {
+    background: linear-gradient(to left, #388e3c, #2e7d32);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.excel-download-button:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    background: #2e7d32;
+}
+
+.excel-download-button:disabled {
+    background: linear-gradient(to right, #a5d6a7, #81c784);
+    cursor: not-allowed;
+    opacity: 0.8;
+    box-shadow: none;
+    transform: none;
+}
+
+/* --- Hero Section - Adjusted for enhanced header --- */
 .hero-section {
-  background: url('https://images.unsplash.com/photo-1535914254981-b5012eebbd15?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-  position: relative;
-  height: 100vh;
-  margin-top: 80px;
-}
-.hero-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-}
-.hero-content {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  text-align: center;
-  padding: 0 1rem;
-}
-.hero-content h2 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.hero-content p {
-  font-size: 1.2rem;
-  max-width: 600px;
+    background: url('https://images.unsplash.com/photo-1535914254981-b5012eebbd15?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    position: relative;
+    height: 40vh;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+    margin-top: 0;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
 
-/* ===== אזור תוכן מרכזי: שתי עמודות ===== */
-.main-sections {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin: 3rem auto;
-  padding: 0 1rem;
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.28));
+    z-index: 0;
 }
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 0 1.5rem;
+    max-width: 750px;
+}
+
+.hero-content h2 {
+    font-size: 3rem;
+    margin-bottom: 0.9rem;
+    font-weight: 800;
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+    line-height: 1.2;
+}
+
+.hero-content p {
+    font-size: 1.05rem;
+    max-width: 650px;
+    margin: 0 auto 1.3rem auto;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+/* --- Main Content Sections Layout (Enhanced) --- */
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-top: 3.5rem;
+}
+
 .product-search-section,
 .diets-section {
-  background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  flex: 1 1 48%;
-  min-width: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.09);
+    margin: 1.8rem auto;
+    flex: 1 1 48%;
+    box-sizing: border-box;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease;
 }
 
-/* ===== תוצאות חיפוש ===== */
+.product-search-section:hover,
+.diets-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* --- Product Search Results (Enhanced) --- */
 .product-details {
-  background: #e8f5e9;
-  padding: 1.2rem;
-  border-left: 6px solid #66bb6a;
-  border-radius: 10px;
-  margin-top: 1rem;
-  transition: box-shadow 0.3s;
+    background: #eefaf1;
+    padding: 2rem;
+    border-left: 6px solid #81c784;
+    border-radius: 16px;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
 }
+
 .product-details:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
 }
 
-/* ===== דיאטות מומלצות ===== */
-.diet-cards {
-  display: grid;
-  gap: 1.2rem;
-  grid-template-columns: 1fr;
-}
-.diet-card {
-  background: linear-gradient(145deg, #ffffff, #f0f4f8);
-  border: 1px solid #e0e0e0;
-  border-radius: 14px;
-  padding: 1.2rem;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-.diet-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-}
-.diet-card h4 {
-  color: #2e7d32;
-  margin-bottom: .5rem;
-}
-.diet-card button {
-  background: #66bb6a;
-  color: white;
-  padding: .6rem 1.2rem;
-  border: none;
-  border-radius: 20px;
-  margin-top: .8rem;
-  cursor: pointer;
-  transition: background .3s;
-}
-.diet-card button:hover {
-  background: #388e3c;
-}
-.diet-image {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 0.8rem;
+.product-details h4 {
+    color: #2e7d32;
+    margin-bottom: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
-/* ===== הודעות טעינה / שגיאה ===== */
-.loading {
-  color: #1976d2;
-  margin-top: .5rem;
-}
-.error {
-  color: #d32f2f;
-  margin-top: .5rem;
+.product-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-/* ===== Footer ===== */
-.main-footer {
-  background: #388e3c;
-  color: white;
-  text-align: center;
-  padding: 1.5rem 0;
-  margin-top: 4rem;
-}
-
-/* ===== רספונסיביות ===== */
-@media (max-width: 900px) {
-  .main-sections {
-    flex-direction: column;
-  }
-  .hero-content h2 {
-    font-size: 2.2rem;
-  }
-  .hero-content p {
+.product-details li {
+    margin-bottom: 0.6rem;
     font-size: 1rem;
-  }
+    color: #555;
+    display: flex;
+    align-items: flex-start;
+}
+
+.product-details li::before {
+    content: '✔️';
+    margin-left: 0.7rem;
+    color: #66bb6a;
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+/* --- Recommended Diets Section (Enhanced) --- */
+.diets-section h3,
+.product-search-section h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2e7d32;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.diet-cards {
+    display: grid;
+    gap: 1.8rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.diet-card {
+    background: #ffffff;
+    border: 1px solid #ebebeb;
+    border-radius: 20px;
+    padding: 1.8rem;
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+}
+
+.diet-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.18);
+}
+
+.diet-card h4 {
+    color: #2e7d32;
+    margin-bottom: 0.8rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.diet-card p {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.diet-card button {
+    background: #66bb6a;
+    color: white;
+    padding: 0.8rem 1.6rem;
+    border: none;
+    border-radius: 25px;
+    margin-top: auto;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+    font-size: 0.95rem;
+    align-self: flex-start;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.diet-card button:hover {
+    background: #388e3c;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.diet-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 1.2rem;
+    filter: brightness(0.97);
+    transition: filter 0.3s ease;
+}
+
+.diet-card:hover .diet-image {
+    filter: brightness(1.03);
+}
+
+/* --- Loading / Error Messages --- */
+.loading {
+    color: #1977d2;
+    margin-top: 1rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.error {
+    color: #d32f2f;
+    margin-top: 1rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1rem;
+}
+
+/* --- Footer --- */
+.main-footer {
+    background: #388e3c;
+    color: white;
+    text-align: center;
+    padding: 2.5rem 0;
+    margin-top: 4rem;
+    font-size: 0.9rem;
+    box-shadow: 0 -3px 15px rgba(0,0,0,0.05);
+}
+
+/* ================== Responsive Design ================== */
+@media (max-width: 1024px) {
+    .main-header {
+        height: auto;
+        padding: 0.6rem 0;
+    }
+    .main-header .container {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+    .logo {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-size: 1.9rem;
+    }
+    .header-right-group {
+        width: 100%;
+        flex-direction: column;
+        gap: 1.2rem;
+        align-items: center;
+    }
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+        gap: 0.8rem;
+    }
+    .nav-links a,
+    .nav-links button {
+        font-size: 0.88rem;
+        padding: 0.35rem 0.9rem;
+    }
+    .nav-links .nav-button {
+        padding: 0.45rem 1rem;
+    }
+    .header-search {
+        width: 95%;
+        max-width: none;
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .header-search::before { /* מסתיר אייקון חיפוש במובייל */
+        display: none;
+    }
+    .header-search .product-search-input {
+        padding-left: 1.4rem; /* מחזיר פדינג רגיל במובייל */
+    }
+    .excel-download-button,
+    .header-search .product-search-input {
+        flex-grow: 1;
+        font-size: 0.85rem;
+        padding: 0.45rem 1rem;
+    }
+    .hero-content h2 {
+        font-size: 2.8rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 0.9rem 0;
+    }
+    .hero-section {
+        height: 30vh;
+        min-height: 200px;
+    }
+    .hero-content h2 {
+        font-size: 2.4rem;
+    }
+    .hero-content p {
+        font-size: 0.9rem;
+    }
+    .content-wrapper {
+        gap: 2rem;
+        margin-top: 2.5rem;
+    }
+    .product-search-section,
+    .diets-section {
+        padding: 2rem;
+        margin: 1.2rem auto;
+    }
+    .diet-cards {
+        grid-template-columns: 1fr;
+    }
+    .header-search {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.8rem; /* מרווח כשנערם */
+    }
+    .header-search .product-search-input,
+    .excel-download-button {
+        width: 90%;
+        margin-left: 0; /* מבטל מרווח כשיש ערימה */
+    }
+    .nav-links {
+        gap: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.7rem;
+    }
+    .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .nav-links a,
+    .nav-links button {
+        width: 90%;
+        text-align: center;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.85rem;
+    }
+    .nav-links .nav-button {
+        padding: 0.4rem 0.9rem;
+    }
+    .hero-content h2 {
+        font-size: 2rem;
+    }
+    .hero-content p {
+        font-size: 0.8rem;
+    }
+    .product-search-section,
+    .diets-section {
+        padding: 1.5rem;
+    }
+}
+
+/* --- סגנונות עבור רשימת תוצאות חיפוש מוצרים --- */
+
+/* הקונטיינר העוטף את שדה החיפוש והדרופדאון */
+.product-search-container {
+    position: relative;
+}
+
+/* הקונטיינר העוטף את כל תוכן הדרופדאון (תוצאות, טעינה, שגיאה, אין תוצאות) */
+.product-dropdown-content {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 100%;
+    z-index: 50;
+    max-height: 160px;
+    overflow-y: auto;
+    margin-top: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    list-style: none;
+    padding: 0;
+}
+
+/* ה-UL שמציג את רשימת התוצאות (בתוך product-dropdown-content) */
+.product-dropdown-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* פריט בודד ברשימת התוצאות (LI) */
+.product-dropdown-content ul li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #eee;
+}
+
+/* מונע קו הפרדה לפריט האחרון */
+.product-dropdown-content ul li:last-child {
+    border-bottom: none;
+}
+
+/* סגנון בריחוף על פריט */
+.product-dropdown-content ul li:hover {
+    background-color: #f0f0f0;
+}
+
+/* סגנונות להודעות טעינה, שגיאה ו"לא נמצאו תוצאות" (בתוך product-dropdown-content) */
+.info-message {
+    padding: 10px 15px;
+    text-align: center;
+}
+
+.loading-message {
+    color: #1977d2;
+    font-weight: 600;
+}
+.error-message {
+    color: #d32f2f;
+    font-weight: 600;
+}
+.no-results-message {
+    color: #777;
 }

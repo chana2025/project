@@ -7,3 +7,4 @@ export type DietType = {
     SpecialComments: string,
     TimeMeals: string[]
 }
+
