@@ -180,8 +180,11 @@ import {
 } from "@mui/material";
 import { SelectChangeEvent } from '@mui/material/Select'; // ייבוא SelectChangeEvent במפורש
 
-import { signUp } from "../services/auth.service";
 import { SignupData, eRole } from "../types/SignUp.Types";
+
+const isValidEmail = (email: string): boolean => {
+  return /\S+@\S+\.\S+/.test(email);
+};
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
@@ -230,7 +233,10 @@ export const SignUpPage = () => {
     e.preventDefault();
     setErrors(null);
     setSuccessMessage(null);
-
+    if (!isValidEmail(formData.email)) {
+      setErrors("פורמט המייל אינו תקין.");
+      return;
+    }
     if (formData.password !== confirmPassword) {
       setErrors("הסיסמאות אינן תואמות");
       return;
@@ -427,3 +433,7 @@ export const SignUpPage = () => {
     </Container>
   );
 };
+
+function signUp(formData: SignupData) {
+  throw new Error("Function not implemented.");
+}

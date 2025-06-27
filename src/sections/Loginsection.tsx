@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { TextField, Button, Typography, Box } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 
 interface LoginFormProps {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
@@ -7,29 +7,36 @@ interface LoginFormProps {
 
 export const LoginForm = ({ onSubmit }: LoginFormProps) => {
   return (
-    <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
+    <Box
+      component="form"
+      onSubmit={onSubmit}
+      sx={{ mt: 3, display: "flex", flexDirection: "column", gap: 2 }}
+    >
       <TextField
-        margin="normal"
         required
         fullWidth
-        id="name"
-        label="שם משתמש"
-        name="name"
-        autoComplete="name"
+        id="email"
+        name="email"
+        label="אימייל"
+        autoComplete="email"
         autoFocus
       />
       <TextField
-        margin="normal"
         required
         fullWidth
+        id="password"
         name="password"
         label="סיסמה"
         type="password"
-        id="password"
         autoComplete="current-password"
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        כניסת משתמש
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 2, py: 1.2, fontWeight: 600 }}
+      >
+        התחבר
       </Button>
     </Box>
   );

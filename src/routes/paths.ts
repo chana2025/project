@@ -4,4 +4,5 @@ export const Paths = {
   home: 'home',
   products: 'products',
   weeklyTracking: 'weekly-tracking',
+   myArea: 'myArea',
 };
