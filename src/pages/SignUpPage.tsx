@@ -1,169 +1,9 @@
-// import React, { useState, FormEvent } from "react";
-// import { Link } from "react-router-dom";
-// import './SignUp.page.css';
-// import {
-//   TextField,
-//   Button,
-//   Typography,
-//   Container,
-//   Box,
-//   Avatar,
-//   Paper,
-//   Grid
-// } from "@mui/material";
-// // import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-
-// export const SignUpPage = () => {
-//   const [formData, setFormData] = useState({
-//     username: "",
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//   });
-// //typeלמה אין התאמה ל 
-//   const [errors, setErrors] = useState<string | null>(null);
-
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const onSubmit = async (e: FormEvent) => {
-//     e.preventDefault();
-//     const { password, confirmPassword } = formData;
-
-//     if (password !== confirmPassword) {
-//       setErrors("הסיסמאות אינן תואמות");
-//       return;
-//     }
-
-//     setErrors(null);
-
-//     console.log("נרשמת בהצלחה:", formData);
-// const formDataToSend = new FormData();
-// formDataToSend.append("username", formData.username);
-// formDataToSend.append("email", formData.email);
-// formDataToSend.append("password", formData.password);
-// formDataToSend.append("confirmPassword", formData.confirmPassword);
-
-// // אם יש גם תמונה בהמשך - תוסיפי גם formDataToSend.append("fileImage", selectedFile);
-
-// try {
-//   const response = await fetch("https://localhost:7240/api/SignUp", {
-//     method: "POST",
-//     body: formDataToSend,
-//     // אל תגדירי headers בכלל! אחרת זה לא יהיה multipart/form-data כמו ש־C# צריך
-//   });
-
-//   if (!response.ok) {
-//     throw new Error("בעיה בשליחה לשרת");
-//   }
-
-//   const result = await response.json();
-//   console.log("הצלחה מהשרת:", result);
-// } catch (error) {
-//   console.error("שגיאה:", error);
-//   setErrors("אירעה שגיאה בשליחה לשרת");
-// }
-
-//     // TODO: כאן שולחים את הנתונים לשרת
-//   };
-
-//   return (
-//     <Container component="main" maxWidth="xs">
-//       <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 3 }}>
-//         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-//           <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-//             {/* <LockOutlinedIcon > */}
-//           </Avatar>
-//           <Typography component="h1" variant="h5" fontWeight={600}>
-//             הרשמה להתאמת דיאטה
-//           </Typography>
-//           <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 3 }}>
-//             <Grid container spacing={2}>
-//               <Grid>
-//                 <TextField
-//                   name="username"
-//                   required
-//                   fullWidth
-//                   id="username"
-//                   label="שם משתמש"
-//                   autoFocus
-//                   value={formData.username}
-//                   onChange={handleChange}
-//                 />
-//               </Grid>
-//               <Grid>
-//                 <TextField
-//                   name="email"
-//                   required
-//                   fullWidth
-//                   id="email"
-//                   label="אימייל"
-//                   value={formData.email}
-//                   onChange={handleChange}
-//                 />
-//               </Grid>
-//               <Grid size={12}>
-//                 <TextField
-//                   name="password"
-//                   label="סיסמה"
-//                   type="password"
-//                   id="password"
-//                   fullWidth
-//                   required
-//                   value={formData.password}
-//                   onChange={handleChange}
-//                 />
-//               </Grid>
-//               <Grid size={12}>
-//                 <TextField
-//                   name="confirmPassword"
-//                   label="אימות סיסמה"
-//                   type="password"
-//                   id="confirmPassword"
-//                   fullWidth
-//                   required
-//                   value={formData.confirmPassword}
-//                   onChange={handleChange}
-//                 />
-//               </Grid>
-//             </Grid>
-
-//             {errors && (
-//               <Typography color="error" align="center" sx={{ mt: 2 }}>
-//                 {errors}
-//               </Typography>
-//             )}
-
-//             <Button
-//               type="submit"
-//               fullWidth
-//               variant="contained"
-//               color="primary"
-//               sx={{ mt: 3, mb: 2, py: 1.5 }}
-//             >
-//               הירשם עכשיו
-//             </Button>
-
-//             <Typography variant="body2" align="center">
-//               כבר רשום? <Link to="/auth/login">התחבר</Link>
-//             </Typography>
-//           </Box>
-//         </Box>
-//       </Paper>
-//     </Container>
-//   );
-// };
-
-
-// src/pages/SignUp.tsx
-// src/pages/SignUp.tsx
-// src/pages/SignUp.tsx
-
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './SignUp.page.css';
+import LikedProductsAutocomplete from "../sections/LikedProductsAutocomplete";
+import DislikedProductsAutocomplete from "../sections/DislikedProductsAutocomplete";
+
 import {
   TextField,
   Button,
@@ -173,18 +13,16 @@ import {
   Avatar,
   Paper,
   Grid,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
 } from "@mui/material";
-import { SelectChangeEvent } from '@mui/material/Select'; // ייבוא SelectChangeEvent במפורש
+
+import { SelectChangeEvent } from '@mui/material/Select';
 
 import { SignupData, eRole } from "../types/SignUp.Types";
+import { signUp } from "../services/auth.service";
+import { ProductType } from "../types/ProductType.types"
+import { productService } from "../services/product.service";
 
-const isValidEmail = (email: string): boolean => {
-  return /\S+@\S+\.\S+/.test(email);
-};
+const isValidEmail = (email: string): boolean => /\S+@\S+\.\S+/.test(email);
 
 export const SignUpPage = () => {
   const navigate = useNavigate();
@@ -202,22 +40,41 @@ export const SignUpPage = () => {
     dislikedProductIds: [],
   });
 
-  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [products, setProducts] = useState<ProductType[]>([]);
 
-  // פונקציה לטיפול בשינויים מ-TextFields (ומזהים דומים)
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await productService.getAllProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("שגיאה בטעינת מוצרים:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  type FormFieldNames = keyof SignupData;
+
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const key = name as FormFieldNames;
+
+    setFormData((prev) => ({
+      ...prev,
+      [key]: key === "height" || key === "weight" ? (value === "" ? null : parseFloat(value)) : value,
+    }));
   };
 
-  // פונקציה חדשה לטיפול בשינויים מרכיב Select בלבד
   const handleSelectChange = (event: SelectChangeEvent<eRole>) => {
     const { name, value } = event.target;
-    setFormData((prev) => ({ 
-      ...prev, 
-      [name as keyof SignupData]: value as eRole
+    setFormData((prev) => ({
+      ...prev,
+      [name as keyof SignupData]: value as eRole,
     }));
   };
 
@@ -233,10 +90,12 @@ export const SignUpPage = () => {
     e.preventDefault();
     setErrors(null);
     setSuccessMessage(null);
+
     if (!isValidEmail(formData.email)) {
       setErrors("פורמט המייל אינו תקין.");
       return;
     }
+
     if (formData.password !== confirmPassword) {
       setErrors("הסיסמאות אינן תואמות");
       return;
@@ -250,12 +109,12 @@ export const SignUpPage = () => {
     }
 
     try {
-      await signUp(formData); 
+      await signUp(formData);
       setSuccessMessage("נרשמת בהצלחה! הנך מועבר לדף ההתחברות...");
-      
+
       setTimeout(() => {
-        navigate("/auth/login"); 
-      }, 2000); 
+        navigate("/auth/login");
+      }, 2000);
 
     } catch (error: any) {
       console.error("שגיאה בהרשמה:", error);
@@ -271,15 +130,14 @@ export const SignUpPage = () => {
     <Container component="main" maxWidth="xs">
       <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 3 }}>
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-            {/* <LockOutlinedIcon /> */}
-          </Avatar>
+          <Avatar sx={{ m: 1, bgcolor: "primary.main" }} />
           <Typography component="h1" variant="h5" fontWeight={600}>
             הרשמה להתאמת דיאטה
           </Typography>
           <Box component="form" onSubmit={onSubmit} noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-            <Grid size={12}>
+
+              <Grid size={12}>
                 <TextField
                   name="fullName"
                   required
@@ -291,6 +149,7 @@ export const SignUpPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid size={12}>
                 <TextField
                   name="email"
@@ -303,6 +162,7 @@ export const SignUpPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid size={12}>
                 <TextField
                   name="phone"
@@ -314,6 +174,7 @@ export const SignUpPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid size={12}>
                 <TextField
                   name="password"
@@ -326,6 +187,7 @@ export const SignUpPage = () => {
                   onChange={handleChange}
                 />
               </Grid>
+
               <Grid size={12}>
                 <TextField
                   name="confirmPassword"
@@ -351,6 +213,7 @@ export const SignUpPage = () => {
                   inputProps={{ step: "0.1" }}
                 />
               </Grid>
+
               <Grid size={12}>
                 <TextField
                   name="weight"
@@ -364,21 +227,37 @@ export const SignUpPage = () => {
                 />
               </Grid>
 
-              <Grid size={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="role-select-label">תפקיד</InputLabel>
-                  <Select
-                    labelId="role-select-label"
-                    id="role-select"
-                    name="role"
-                    value={formData.role}
-                    label="תפקיד"
-                    onChange={handleSelectChange}
-                  >
-                    <MenuItem value={eRole.USER}>משתמש</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
+<Grid size={12}>
+  <Box sx={{ border: '1px solid #ccc', borderRadius: 2, p: 2, mb: 2, bgcolor: '#fafafa' }}>
+    <Typography variant="subtitle1" fontWeight={600} mb={1} textAlign="right">
+      מוצרים אהובים
+    </Typography>
+    <LikedProductsAutocomplete
+      products={products}
+      selectedProductIds={formData.likedProductIds ?? []}
+      onChange={(newIds) =>
+        setFormData((prev) => ({ ...prev, likedProductIds: newIds }))
+      }
+    />
+  </Box>
+</Grid>
+
+<Grid size={12}>
+  <Box sx={{ border: '1px solid #ccc', borderRadius: 2, p: 2, mb: 2, bgcolor: '#fafafa' }}>
+    <Typography variant="subtitle1" fontWeight={600} mb={1} textAlign="right">
+      מוצרים שנואים
+    </Typography>
+    <DislikedProductsAutocomplete
+      products={products}
+      selectedProductIds={formData.dislikedProductIds ?? []}
+      onChange={(newIds) =>
+        setFormData((prev) => ({ ...prev, dislikedProductIds: newIds }))
+      }
+    />
+  </Box>
+</Grid>
+
+
 
               <Grid size={12}>
                 <Button
@@ -401,6 +280,7 @@ export const SignUpPage = () => {
                   </Typography>
                 )}
               </Grid>
+
             </Grid>
 
             {errors && (
@@ -408,6 +288,7 @@ export const SignUpPage = () => {
                 {errors}
               </Typography>
             )}
+
             {successMessage && (
               <Typography color="primary" align="center" sx={{ mt: 2 }}>
                 {successMessage}
@@ -427,13 +308,10 @@ export const SignUpPage = () => {
             <Typography variant="body2" align="center">
               כבר רשום? <Link to="/auth/login">התחבר</Link>
             </Typography>
+
           </Box>
         </Box>
       </Paper>
     </Container>
   );
 };
-
-function signUp(formData: SignupData) {
-  throw new Error("Function not implemented.");
-}

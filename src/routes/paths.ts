@@ -5,4 +5,5 @@ export const Paths = {
   products: 'products',
   weeklyTracking: 'weekly-tracking',
    myArea: 'myArea',
+   graph:'graph'
 };

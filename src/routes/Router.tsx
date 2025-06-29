@@ -10,6 +10,8 @@ import { Layout } from "../layouts/Layout";
 import { Paths } from "./paths";
 import WeeklyTrackingPage from "../pages/WeeklyTrackingPage";
 import { PrivateAreaPage } from "../pages/PrivateAreaPage"; // ✅ הוספת האזור האישי
+// import {MyAreaPage} from "../pages/MyAreaPage";
+import { HomePage } from "../pages/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,8 @@ const router = createBrowserRouter([
       { path: Paths.products, element: <ProductsPage /> },
       { path: Paths.weeklyTracking, element: <WeeklyTrackingPage /> },
       { path: Paths.myArea, element: <PrivateAreaPage /> }, // ✅ הוספת נתיב לעמוד האזור האישי
+      { path: Paths.graph, element: <HomePage /> },
+    
     ],
   },
   {
