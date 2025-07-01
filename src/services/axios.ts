@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from "axios"
 import { removeSession } from "../auth/auth.utils"
+import { WeeklyTracking } from "../types/weeklyTracking.types"
 
 const baseURL = "https://localhost:7091"
 
@@ -26,6 +27,10 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 
+export const addTrackingEntry = async (data: WeeklyTracking): Promise<WeeklyTracking> => {
+  const res = await axiosInstance.post("/api/WeeklyTracking", data);
+  return res.data;
+};
 
 export default axiosInstance
 

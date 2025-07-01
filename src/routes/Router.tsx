@@ -8,10 +8,10 @@ import { LoginPage } from "../pages/LoginPage";
 import { SignUpPage } from "../pages/SignUpPage";
 import { Layout } from "../layouts/Layout";
 import { Paths } from "./paths";
-import WeeklyTrackingPage from "../pages/WeeklyTrackingPage";
 import { PrivateAreaPage } from "../pages/PrivateAreaPage"; // ✅ הוספת האזור האישי
 // import {MyAreaPage} from "../pages/MyAreaPage";
 import { HomePage } from "../pages/HomePage";
+import { WeeklyTrackingPage } from "../pages/WeeklyTrackingPage";
 
 const router = createBrowserRouter([
   {

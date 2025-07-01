@@ -13,6 +13,7 @@ export const LoginPage = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+
     if (!email || !password) {
       setError("נא למלא אימייל וסיסמה");
       return;
@@ -23,12 +24,20 @@ export const LoginPage = () => {
       const result = await login(email, password);
       setLoading(false);
 
-      if (result?.token) {
-        localStorage.setItem("token", result.token);
-        navigate("/myArea");
-      } else {
-        setError("שגיאה: לא התקבל טוקן");
-      }
+ if (result?.token) {
+  localStorage.setItem("token", result.token);
+
+  if (result.id) {
+    localStorage.setItem("userId", result.id.toString());
+  } else {
+    console.warn("⚠️ לא התקבל userId מהשרת");
+  }
+
+  navigate("/myArea");
+} else {
+  setError("שגיאה: לא התקבל טוקן");
+}
+
     } catch (err: any) {
       setLoading(false);
       console.error("שגיאה בהתחברות:", err);

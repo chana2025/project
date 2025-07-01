@@ -1,44 +1,50 @@
-import React, { useState } from "react";
-import { weeklyTracking } from "../types/weeklyTracking.types";
+import React, { useState } from 'react';
+import { TextField, Button, Box, FormControlLabel, Checkbox } from '@mui/material';
+import { WeeklyTracking } from '../types/weeklyTracking.types';
 
 type Props = {
-  onSubmit: (data: weeklyTracking) => void;
+  onSubmit: (entry: WeeklyTracking) => void;
+  customerId: number;
 };
 
-export const WeeklyTrackerForm = ({ onSubmit }: Props) => {
-  const [weight, setWeight] = useState<number>(0);
-  const [error, setError] = useState<string>("");
+const WeeklyTrackerForm = ({ onSubmit, customerId }: Props) => {
+  const [weight, setWeight] = useState('');
+  const [isPassCalories, setIsPassCalories] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (weight < 35) {
-      setError(" המשקל צריך להיות לפחות 35 ק״ג - פנה בדחיפות למרפאה");
-      return;
-    }
+    if (!weight) return;
 
-    const data: weeklyTracking = {
-      Id: Date.now(),
-      CustId: 1,
-      WeakDate: new Date(),
-      UpdatdedWieght: weight,
-      IsPassCalories: weight > 70 // דוגמה
+    const newEntry: WeeklyTracking = {
+      id: 0, // backend ייצר את ה-id
+      custId: customerId,
+      weekDate: new Date().toISOString(),
+      updatedWeight: Number(weight),
+      isPassCalories,
     };
-    onSubmit(data);
-    setWeight(0);
-    setError("");
+
+    onSubmit(newEntry);
+    setWeight('');
+    setIsPassCalories(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>הכנס משקל:</label>
-      <input
+    <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3, display: 'flex', gap: 2, alignItems: 'center' }}>
+      <TextField
+        label="משקל"
         type="number"
         value={weight}
-        min={35}
-        onChange={(e) => setWeight(parseFloat(e.target.value))}
+        onChange={e => setWeight(e.target.value)}
+        required
+        inputProps={{ min: 0 }}
       />
-      <button type="submit">שמור</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </form>
+      <FormControlLabel
+        control={<Checkbox checked={isPassCalories} onChange={e => setIsPassCalories(e.target.checked)} />}
+        label="עמידה בתפריט קלוריות"
+      />
+      <Button variant="contained" type="submit">הוסף מעקב</Button>
+    </Box>
   );
 };
+
+export default WeeklyTrackerForm;

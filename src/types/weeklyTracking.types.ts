@@ -1,7 +1,7 @@
-export type weeklyTracking = {
-  Id: number;
-  CustId: number;
-  WeakDate: Date;
-  UpdatdedWieght: number;
-  IsPassCalories: boolean;
+export type WeeklyTracking = {
+  id: number;
+  custId: number;
+  weekDate: string; // ISO string
+  updatedWeight: number;
+  isPassCalories: boolean;
 };
