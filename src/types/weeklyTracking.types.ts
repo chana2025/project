@@ -1,7 +1,8 @@
 export type WeeklyTracking = {
   id: number;
   custId: number;
-  weekDate: string; // ISO string
-  updatedWeight: number;
+  weekDate: string;
+  updatdedWieght: number; // עם d מיותרת – כמו ב־DTO שלך
   isPassCalories: boolean;
+    consumedCalories?: number; 
 };

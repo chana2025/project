@@ -9,7 +9,9 @@ export type customer = {
    Password:string
    DietId:number,
    Role:eRole,
-   ImageUrl?: string
+   ImageUrl?: string,
+   ImagePath?: string 
+
 }
 
 export enum eGender{

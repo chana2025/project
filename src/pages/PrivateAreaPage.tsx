@@ -1,17 +1,33 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Grid,
+  Alert,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Button, CircularProgress } from "@mui/material";
 import { parseJwt } from "../utils/jwtUtils";
 import { getCustomerById } from "../services/user.service";
-import "./PrivateAreaPage.css";
-
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { matchDietsForCustomer } from "../redux/diets/Diet.slice";
+import { WeeklyTrackingChart } from "../sections/WeeklyTrackerChart";
+import { WeeklyTracking } from "../types/weeklyTracking.types";
+import { getTrackingDataByCustomer } from "../services/tracking.service";
 
-export const PrivateAreaPage = () => {
+export const PrivateAreaPage: React.FC = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState<number | null>(null);
+  const [imagePath, setImagePath] = useState<string | null>(null); // ✅ סטייט לתמונה
+  const [trackingData, setTrackingData] = useState<WeeklyTracking[]>([]);
+  const [loadingTracking, setLoadingTracking] = useState(true);
+  const [trackingError, setTrackingError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -21,116 +37,184 @@ export const PrivateAreaPage = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      console.warn("אין טוקן ב-localStorage");
-      return;
-    }
+    if (!token) return;
+
     const decoded = parseJwt(token);
     const id = parseInt(decoded?.CustomerId || decoded?.customerId || "0");
-    if (!id) {
-      console.warn("לא נמצא CustomerId בטוקן");
-      return;
-    }
+    if (!id) return;
+
     setUserId(id);
 
-    getCustomerById(id).then((res) => {
-      setFullName(res.fullName || res.FullName || "משתמש");
-      setEmail(res.email || res.Email || "example@mail.com");
-    }).catch((err) => {
-      console.error("שגיאה בטעינת פרטי משתמש:", err);
-    });
+    getCustomerById(id)
+      .then((res) => {
+        setFullName(res.fullName || res.FullName || "משתמש");
+        setEmail(res.email || res.Email || "example@mail.com");
+        setImagePath(res.imagePath || res.ImagePath || null); // ✅ שמירה של base64 לתמונה
+      })
+      .catch(() => {
+        setFullName("משתמש");
+        setEmail("example@mail.com");
+      });
   }, []);
 
   useEffect(() => {
     if (userId) {
-      console.log("Dispatching matchDietsForCustomer for user:", userId);
       dispatch(matchDietsForCustomer(userId));
     }
   }, [userId, dispatch]);
 
+  useEffect(() => {
+    if (!userId) return;
+
+    setLoadingTracking(true);
+    setTrackingError(null);
+
+    getTrackingDataByCustomer(userId)
+      .then((data) => {
+        setTrackingData(data);
+      })
+      .catch(() => {
+        setTrackingError("שגיאה בטעינת נתוני המעקב השבועי.");
+      })
+      .finally(() => {
+        setLoadingTracking(false);
+      });
+  }, [userId]);
+
+  const weightStart =
+    trackingData.length > 0 ? trackingData[0].updatdedWieght : null;
+  const weightLatest =
+    trackingData.length > 0
+      ? trackingData[trackingData.length - 1].updatdedWieght
+      : null;
+  const weightDiff =
+    weightStart !== null && weightLatest !== null
+      ? (weightStart - weightLatest).toFixed(1)
+      : "--";
+
+  const passCaloriesCount = trackingData.filter((t) => t.isPassCalories).length;
+  const passCaloriesPercent =
+    trackingData.length > 0
+      ? Math.round((passCaloriesCount / trackingData.length) * 100)
+      : 0;
+
+  const averageCalories =
+    trackingData.length > 0
+      ? Math.round(
+          trackingData.reduce((sum, t) => sum + (t.consumedCalories || 0), 0) /
+            trackingData.length
+        )
+      : 0;
+
   return (
-    <div className="private-area-wrapper">
-      <div className="top-banner">
-        <div className="banner-overlay">
-          <div className="banner-content">
-            <div className="text-part">
-              <h1>שלום {fullName} 🌿</h1>
-              <p>ברוכה הבאה לאזור האישי שלך</p>
-            </div>
-            {userId && (
-              <Avatar
-                src={`https://localhost:7091/api/customer/image/${userId}`}
-                alt="תמונת פרופיל"
-                className="banner-avatar"
-              />
-            )}
-          </div>
-        </div>
-      </div>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 6 }}>
+      <Box display="flex" alignItems="center" gap={2} mb={3}>
+        <Typography variant="h4" component="h1">
+          שלום {fullName} 🌿
+        </Typography>
+        {userId && (
+          <Avatar
+            src={
+              imagePath
+                ? `data:image/jpeg;base64,${imagePath}`
+                : "/assets/default-user.png"
+            }
+            alt="תמונת פרופיל"
+            sx={{ width: 56, height: 56 }}
+          />
+        )}
+      </Box>
 
-      <div className="main-content">
-        <div className="button-group">
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              if (userId) {
-                console.log("לחצת התחילי התאמה, מפעיל dispatch");
-                dispatch(matchDietsForCustomer(userId));
-              } else {
-                alert("לא זוהה משתמש");
-              }
-            }}
-          >
-            התחילי התאמה
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => navigate("/weekly-tracking")}
-          >
-            למעקב השבועי
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => navigate("/edit-profile")}
-          >
-            עריכת פרופיל
-          </Button>
-        </div>
+      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+        <Grid container spacing={3} justifyContent="space-around" textAlign="center">
+          <Grid size={4}>
+            <Typography variant="h5" color="primary">
+              {weightDiff !== "--" ? `${weightDiff} ק"ג` : "--"}
+            </Typography>
+            <Typography>ירידה במשקל</Typography>
+          </Grid>
+          <Grid size={4}>
+            <Typography variant="h5" color="primary">
+              {passCaloriesPercent}%
+            </Typography>
+            <Typography>עמידה בתפריט</Typography>
+          </Grid>
+          <Grid size={4}>
+            <Typography variant="h5" color="primary">
+              {averageCalories}
+            </Typography>
+            <Typography>קלוריות ממוצעות</Typography>
+          </Grid>
+        </Grid>
+      </Paper>
 
-        <div className="progress-stats">
-          <div className="stat-box">
-            <h3>5.2 ק"ג</h3>
-            <p>ירידה במשקל</p>
-          </div>
-          <div className="stat-box">
-            <h3>75%</h3>
-            <p>עמידה בתפריט</p>
-          </div>
-          <div className="stat-box">
-            <h3>1400</h3>
-            <p>קלוריות ממוצעות</p>
-          </div>
-        </div>
+      <Paper elevation={3} sx={{ p: 2, mb: 4, minHeight: 350 }}>
+        <Typography variant="h6" gutterBottom>
+          מעקב משקל שבועי
+        </Typography>
+        {loadingTracking ? (
+          <Box display="flex" justifyContent="center" mt={8}>
+            <CircularProgress />
+          </Box>
+        ) : trackingError ? (
+          <Alert severity="error">{trackingError}</Alert>
+        ) : trackingData.length === 0 ? (
+          <Typography>אין נתוני מעקב להצגה</Typography>
+        ) : (
+          <WeeklyTrackingChart data={trackingData} />
+        )}
+      </Paper>
 
-        <div className="match-results">
-          <h2>דיאטות מתאימות עבורך</h2>
-          {matchLoading && <CircularProgress />}
-          {matchError && <p style={{ color: "red" }}>{matchError}</p>}
-          {matchedDiets.length > 0 ? (
-            matchedDiets.map((diet) => (
-              <div key={diet.id} className="diet-box">
-                <h4>{diet.dietName}</h4>
-                {diet.specialComments && <p>{diet.specialComments}</p>}
-              </div>
-            ))
-          ) : (
-            !matchLoading && <p>לא נמצאו דיאטות מתאימות.</p>
-          )}
-        </div>
-      </div>
-    </div>
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          דיאטות מתאימות עבורך
+        </Typography>
+        {matchLoading && <CircularProgress />}
+        {matchError && <Alert severity="error">{matchError}</Alert>}
+        {!matchLoading && !matchError && matchedDiets.length === 0 && (
+          <Typography>לא נמצאו דיאטות מתאימות.</Typography>
+        )}
+        {!matchLoading &&
+          matchedDiets.map((diet) => (
+            <Box
+              key={diet.id}
+              sx={{
+                mb: 2,
+                p: 2,
+                border: "1px solid #ddd",
+                borderRadius: 2,
+                backgroundColor: "#f9f9f9",
+              }}
+            >
+              <Typography variant="subtitle1" fontWeight="bold">
+                {diet.dietName}
+              </Typography>
+              {diet.specialComments && (
+                <Typography>{diet.specialComments}</Typography>
+              )}
+            </Box>
+          ))}
+      </Paper>
+
+      <Box mt={4} display="flex" justifyContent="center" gap={2}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => userId && dispatch(matchDietsForCustomer(userId))}
+        >
+          התחילי התאמה
+        </Button>
+        <Button variant="outlined" onClick={() => navigate("/weekly-tracking")}>
+          למעקב השבועי
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/edit-profile")}
+        >
+          עריכת פרופיל
+        </Button>
+      </Box>
+    </Container>
   );
 };

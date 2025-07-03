@@ -29,10 +29,13 @@ const formatDate = (dateString: string) => {
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
+    const weight = payload[0].value;
+    const isPassCalories = payload[0].payload.isPassCalories;
+
     return (
       <div
         style={{
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          backgroundColor: "white",
           border: "1px solid #ccc",
           padding: 10,
           borderRadius: 4,
@@ -41,23 +44,32 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           boxShadow: "0 0 5px rgba(0,0,0,0.15)",
         }}
       >
-        <p>תאריך: {label}</p>
-        <p>משקל: {payload[0].value} ק"ג</p>
+        <p>📅 תאריך: {label}</p>
+        <p>⚖️ משקל: {weight} ק"ג</p>
+        <p>
+          🍽️ עמידה בתפריט:{" "}
+          <strong style={{ color: isPassCalories ? "green" : "red" }}>
+            {isPassCalories ? "✓ כן" : "✗ לא"}
+          </strong>
+        </p>
       </div>
     );
   }
   return null;
 };
 
+
 export const WeeklyTrackingChart: React.FC<Props> = ({ data }) => {
   if (!data.length) {
     return <p style={{ textAlign: "center" }}>אין נתונים להצגה בגרף</p>;
   }
 
-  const chartData = data.map((item) => ({
-    date: formatDate(item.weekDate),
-    weight: item.updatedWeight,
-  }));
+const chartData = data.map((item) => ({
+  date: formatDate(item.weekDate),
+  weight: item.updatdedWieght,
+  isPassCalories: item.isPassCalories, 
+}));
+
 
   return (
     <div style={{ width: "100%", height: 350 }}>
@@ -70,11 +82,11 @@ export const WeeklyTrackingChart: React.FC<Props> = ({ data }) => {
           <XAxis dataKey="date" />
           <YAxis
             domain={[
-              (dataMin: number) => Math.floor(dataMin - 2),
-              (dataMax: number) => Math.ceil(dataMax + 2),
+              (min: number) => Math.floor(min - 2),
+              (max: number) => Math.ceil(max + 2),
             ]}
+            unit="קג"
             tickCount={6}
-            unit=" קג"
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
@@ -87,11 +99,8 @@ export const WeeklyTrackingChart: React.FC<Props> = ({ data }) => {
             activeDot={{ r: 8 }}
             dot={{ r: 5 }}
           />
-          console.log("Weekly data:", data);
-
         </LineChart>
       </ResponsiveContainer>
     </div>
-    
   );
 };
